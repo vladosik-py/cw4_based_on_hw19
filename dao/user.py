@@ -12,7 +12,10 @@ class UserDAO:
         return self.session.query(User).all()
 
     def get_by_username(self, username):
-        return self.session.query(User).filter(User.username == username).first()
+        return self.session.query(User).filter(User.name == username).one_or_none()
+
+    def get_user_by_email(self, email):
+        return self.session.query(User).filter(User.email == email).one_or_none()
 
     def create(self, user_d):
         ent = User(**user_d)
@@ -27,9 +30,9 @@ class UserDAO:
 
     def update(self, user_d):
         user = self.get_one(user_d.get("id"))
-        user.name = user_d.get("name")
-        user.password = user_d.get("password")
-        user.role = user_d.get("role")
+
+        for key, value in user_d.items():
+            setattr(user, key, value)
 
         self.session.add(user)
         self.session.commit()

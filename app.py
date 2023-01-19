@@ -26,23 +26,13 @@ def register_extensions(app):
     api.add_namespace(movie_ns)
     api.add_namespace(user_ns)
     api.add_namespace(auth_ns)
-    create_data(app, db)
-
-
-def create_data(app, db):
-    with app.app_context():
-        db.create_all()
-
-        u1 = User(username="vasya", password="my_little_pony", role="user")
-        u2 = User(username="oleg", password="qwerty", role="user")
-        u3 = User(username="oleg", password="P@ssw0rd", role="admin")
-
-        with db.session.begin():
-            db.session.add_all([u1, u2, u3])
 
 
 app = create_app(Config())
 app.debug = True
+
+with app.app_context():
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(host="localhost", port=10001, debug=True)
